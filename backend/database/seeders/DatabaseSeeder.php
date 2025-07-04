@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\User;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,16 +12,22 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create test user
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Create test user if it doesn't exist
+        if (!User::where('email', 'test@example.com')->exists()) {
+            User::factory()->create([
+                'name' => 'Test User',
+                'email' => 'test@example.com',
+                'password' => bcrypt('password'),
+            ]);
+        }
 
-        // Run custom seeders
+        // Run seeders in order (due to foreign key constraints)
         $this->call([
-            SubjectSeeder::class,
-            AchievementSeeder::class,
+            SubjectSeeder::class,      // Create subjects first
+            AchievementSeeder::class,  // Create achievements
+            TopicSeeder::class,        // Create topics (depends on subjects)
+            QuestionSeeder::class,     // Create questions (depends on subjects and topics)
+            QuizSeeder::class,         // Create quizzes (depends on questions)
         ]);
     }
 }

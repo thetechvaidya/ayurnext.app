@@ -3,6 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\SubjectController;
+use App\Http\Controllers\API\QuizController;
+use App\Http\Controllers\API\QuizSessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,64 +19,71 @@ use App\Http\Controllers\API\AuthController;
 */
 
 Route::prefix('v1')->group(function () {
-    // Authentication routes
+    // Public routes
     Route::prefix('auth')->group(function () {
         Route::post('register', [AuthController::class, 'register']);
         Route::post('login', [AuthController::class, 'login']);
-        Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
-        Route::post('refresh', [AuthController::class, 'refresh'])->middleware('auth:sanctum');
     });
-
-    // User management routes
-    Route::middleware('auth:sanctum')->prefix('user')->group(function () {
-        Route::get('profile', [AuthController::class, 'profile']);
-        Route::put('profile', [AuthController::class, 'updateProfile']);
-        // Route::get('statistics', [UserController::class, 'statistics']);
-        // Route::get('achievements', [UserController::class, 'achievements']);
-        // Route::get('leaderboard-position', [UserController::class, 'leaderboardPosition']);
-    });
-
-    // Content management routes (public)
-    // Route::get('subjects', [SubjectController::class, 'index']);
-    // Route::get('subjects/{subject}/topics', [TopicController::class, 'index']);
-
-    // Quiz management routes
-    Route::middleware('auth:sanctum')->group(function () {
-        // Route::get('quizzes', [QuizController::class, 'index']);
-        // Route::get('quizzes/{quiz}', [QuizController::class, 'show']);
-        // Route::post('quizzes/{quiz}/start', [QuizController::class, 'start']);
-        // Route::get('quiz-sessions/{session}', [QuizSessionController::class, 'show']);
-        // Route::put('quiz-sessions/{session}/answer', [QuizSessionController::class, 'submitAnswer']);
-        // Route::post('quiz-sessions/{session}/submit', [QuizSessionController::class, 'submit']);
-        // Route::get('quiz-sessions/{session}/results', [QuizSessionController::class, 'results']);
-    });
-
-    // Daily quiz routes
-    Route::middleware('auth:sanctum')->prefix('daily-quiz')->group(function () {
-        // Route::get('today', [DailyQuizController::class, 'today']);
-        // Route::get('history', [DailyQuizController::class, 'history']);
-        // Route::post('share-result', [DailyQuizController::class, 'shareResult']);
-    });
-
-    // Questions & Content routes
-    Route::middleware('auth:sanctum')->group(function () {
-        // Route::get('questions/bookmarked', [QuestionController::class, 'bookmarked']);
-        // Route::post('questions/{question}/bookmark', [QuestionController::class, 'bookmark']);
-        // Route::delete('questions/{question}/bookmark', [QuestionController::class, 'removeBookmark']);
-    });
-
-    // Gamification routes
-    Route::middleware('auth:sanctum')->group(function () {
-        // Route::get('achievements', [AchievementController::class, 'index']);
-        // Route::get('leaderboard/{period}', [LeaderboardController::class, 'show']);
-        // Route::get('user/level-progress', [UserController::class, 'levelProgress']);
-    });
-
-    // Analytics routes
-    Route::middleware('auth:sanctum')->prefix('analytics')->group(function () {
-        // Route::get('performance', [AnalyticsController::class, 'performance']);
-        // Route::get('weak-areas', [AnalyticsController::class, 'weakAreas']);
-        // Route::get('progress-chart', [AnalyticsController::class, 'progressChart']);
-        // Route::get('time-management', [AnalyticsController::class, 'timeManagement']);
+    
+    // Public subject information (can be accessed without authentication)
+    Route::get('subjects', [SubjectController::class, 'index']);
+    Route::get('subjects/{subject}', [SubjectController::class, 'show']);
+    
+    // Protected routes
+    Route::middleware(['auth:sanctum'])->group(function () {
+        // Authentication
+        Route::prefix('auth')->group(function () {
+            Route::get('user', [AuthController::class, 'user']);
+            Route::put('user', [AuthController::class, 'updateProfile']);
+            Route::post('refresh', [AuthController::class, 'refresh']);
+            Route::post('logout', [AuthController::class, 'logout']);
+        });
+        
+        // Subjects (with user progress)
+        Route::get('subjects/{subject}/topics', [SubjectController::class, 'topics']);
+        
+        // Quizzes
+        Route::get('quizzes', [QuizController::class, 'index']);
+        Route::get('quizzes/{quiz}', [QuizController::class, 'show']);
+        Route::post('quizzes/{quiz}/start', [QuizController::class, 'start']);
+        
+        // Quiz Sessions
+        Route::get('quiz-sessions/{session}', [QuizSessionController::class, 'show']);
+        Route::post('quiz-sessions/{session}/answer', [QuizSessionController::class, 'submitAnswer']);
+        Route::post('quiz-sessions/{session}/submit', [QuizSessionController::class, 'submit']);
+        Route::get('quiz-sessions/{session}/results', [QuizSessionController::class, 'results']);
+        
+        // User specific routes
+        Route::prefix('user')->group(function () {
+            // Placeholder routes for future features
+            Route::get('dashboard', function () {
+                return response()->json(['message' => 'Dashboard endpoint - Coming soon']);
+            });
+            Route::get('progress', function () {
+                return response()->json(['message' => 'Progress endpoint - Coming soon']);
+            });
+            Route::get('achievements', function () {
+                return response()->json(['message' => 'Achievements endpoint - Coming soon']);
+            });
+            Route::get('leaderboard', function () {
+                return response()->json(['message' => 'Leaderboard endpoint - Coming soon']);
+            });
+            Route::get('bookmarks', function () {
+                return response()->json(['message' => 'Bookmarks endpoint - Coming soon']);
+            });
+            Route::get('history', function () {
+                return response()->json(['message' => 'Quiz history endpoint - Coming soon']);
+            });
+        });
+        
+        // Analytics routes (placeholder)
+        Route::prefix('analytics')->group(function () {
+            Route::get('performance', function () {
+                return response()->json(['message' => 'Performance analytics - Coming soon']);
+            });
+            Route::get('streak', function () {
+                return response()->json(['message' => 'Streak analytics - Coming soon']);
+            });
+        });
     });
 });
