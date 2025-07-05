@@ -1,0 +1,68 @@
+name: ayur_exam_prep
+description: Ayurvedic Exam Preparation Mobile App
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # UI & Design
+  cupertino_icons: ^1.0.2
+  flutter_svg: ^2.0.7
+  google_fonts: ^6.1.0
+  
+  # HTTP & API
+  http: ^1.1.0
+  dio: ^5.3.2
+  
+  # State Management
+  provider: ^6.0.5
+  riverpod: ^2.4.5
+  flutter_riverpod: ^2.4.5
+  
+  # Local Storage
+  shared_preferences: ^2.2.2
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  
+  # Authentication
+  jwt_decoder: ^2.0.1
+  
+  # Navigation
+  go_router: ^10.2.0
+  
+  # Utilities
+  intl: ^0.18.1
+  connectivity_plus: ^5.0.1
+  
+  # Animations
+  lottie: ^2.6.0
+  
+  # Icons
+  flutter_icons: ^1.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+  build_runner: ^2.4.6
+  hive_generator: ^2.0.1
+
+flutter:
+  uses-material-design: true
+  
+  assets:
+    - assets/images/
+    - assets/lottie/
+    - assets/icons/
+  
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins-Regular.ttf
+        - asset: assets/fonts/Poppins-Bold.ttf
+          weight: 700
